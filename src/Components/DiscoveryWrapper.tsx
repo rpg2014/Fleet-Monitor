@@ -8,7 +8,8 @@ interface IDiscoveryWrapper {
 }
 
 export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
-    const query = useQuery<() => string[]>('discover', discovery_devices, discoverDevicesOptions)
+    const query = useQuery<String[] | void>('discover', discovery_devices, discoverDevicesOptions)
+    
     const [urls, setUrls] = useState<URL[]>([])
 
     React.useEffect(()=> {
@@ -29,7 +30,8 @@ export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
     
       return (
           <>
-          <DiscoveryDebug/>    
+          <DiscoveryDebug/>  
+          <Button variant='primary'className='float-right'  onClick={()=> query.refetch()}>Click</Button>
           {props.children(urls)}
           </>
       )

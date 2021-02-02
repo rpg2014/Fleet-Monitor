@@ -39,25 +39,30 @@ const Dashboard = (props: IDashboardProps) => {
         {queryKey: ['cpu_temp', {url: props.url}], queryFn: fetchCpuTemp, ...fiveSecUpdateOptions},
         {queryKey: ['load_average', {url: props.url}], queryFn: fetchLoadAverage, ...fiveSecUpdateOptions}
     ])
-
+    let content = <></>;
     if(uptimeQ.isFetching)
     {
-        return (
-            <Spinner animation='grow' variant='light'/>
+        content =(
+        // return (
+            <div className='mx-auto w-100 h-100 d-inline-flex  justify-content-center align-items-center'>
+            <Spinner animation='grow'  variant='light' className='mx-auto '/>
+            </div>
         )
     }
 
-    if(uptimeQ.isError){
+    else if(uptimeQ.isError){
         console.log(uptimeQ)
-        return(
-            // content=(
+        // return(
+            content=(
         <Alert variant='danger'>
             {(uptimeQ.error as any).toString()}
         </Alert>
         )
     }
-    return (
-        <div className='align-self-stretch m-4 p-3 bg-secondary w-25'>
+    else {
+        
+        content = (
+            <p className='lead'>
             <h3>{`${hostQ.data as any}`}</h3> 
             Address: Put ip here
             <br/>
@@ -66,10 +71,14 @@ const Dashboard = (props: IDashboardProps) => {
             Cpu Temp: {cpuTempQ.data} C
             <br/>
             Load Average: {getLoadString(loadQ.data)}
+            </p>
+        )
+        }
+    return (
+        <div className='align-self-stretch m-4 p-3 w-25 shadow rounded bg-secondary  justify-content-center align-items-center lead'>
+            {content}
         </div>
     )
-    
-    
 }
 
 const getLoadString = (data?: {one: string, five: string, fifteen: string}| any): string => {
