@@ -30,3 +30,26 @@ export const fetchLoadAverage = ({queryKey}:any) => {
     // Fetch mem, uptime, disk_info, networks
     return fetch(url.toString() +"system/load_average").then(response => response.json())
 }
+
+export const fetchCpuAverage = ({queryKey}:any) => {
+    const [_key, {url}] = queryKey
+    // Fetch mem, uptime, disk_info, networks
+    return fetch(url.toString() +"system/cpu_average").then(response => response.json())
+}
+
+export const oneSecondUpdateOptions: UseQueryOptions<any,any,any> = {
+    refetchInterval: 1000, //5 secs
+    retry: false
+}
+
+export const fetchNetworks = ({queryKey}:any) => {
+    const [_key, {url}] = queryKey
+    // Fetch mem, uptime, disk_info, networks
+    return fetch(url.toString() +"system/networks").then(response => response.json())
+}
+
+export const fetchNetStats = ({queryKey}:any) => {
+    const [_key, {url}] = queryKey
+    // Fetch mem, uptime, disk_info, networks
+    return fetch(url.toString() +"system/net_stats").then(response => response.json())
+}

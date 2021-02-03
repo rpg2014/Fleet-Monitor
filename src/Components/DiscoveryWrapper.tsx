@@ -30,7 +30,7 @@ export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
     
       return (
           <>
-          <DiscoveryDebug/>  
+          {/* <DiscoveryDebug/>   */}
           <Button variant='primary'className='float-right'  onClick={()=> query.refetch()}>Click</Button>
           {props.children(urls)}
           </>
