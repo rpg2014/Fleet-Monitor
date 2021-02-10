@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
@@ -7,18 +7,21 @@ import { discovery_devices } from './Queries/DiscoverDevices';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { DiscoveryWrapper } from './Components/DiscoveryWrapper';
 import { Dashboards } from './Components/Dashboards';
+import { DevicePage } from './Components/DevicePage';
 
 const queryClient = new QueryClient()
 
 function App() {
+  const [selectedPI, setSelectedPi] = useState();//"http://192.168.0.14:4321")
+
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <DiscoveryWrapper>
         {(urls: URL[])=>
         { 
-          console.log("dashboards")
-        return <Dashboards urls={urls}/>       
+          return  selectedPI ? <DevicePage ip={(selectedPI as unknown as string)} /> : <Dashboards urls={urls}/>
+        
         }
         }
       </DiscoveryWrapper>
