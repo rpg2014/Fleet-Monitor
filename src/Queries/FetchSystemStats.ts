@@ -10,6 +10,9 @@ export const fetchUptime = ({queryKey}:any) => {
 
 export const fetchHostname = ({queryKey}:any) => {
     const [_key, {url}] = queryKey
+    if (!url) {
+        return Promise.resolve()
+    }
     // Fetch mem, uptime, disk_info, networks
     return fetch(url.toString() +"system/hostname").then(response => response.json())
 }
