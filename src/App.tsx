@@ -6,13 +6,13 @@ import {  useQuery, useMutation,  useQueryClient,QueryClient,QueryClientProvider
 import { discovery_devices } from './Queries/DiscoverDevices';
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { DiscoveryWrapper } from './Components/DiscoveryWrapper';
-import { Dashboards } from './Components/Dashboards';
+import { DashboardPage } from './Components/Dashboards';
 import { DevicePage } from './Components/DevicePage';
 
 const queryClient = new QueryClient()
 
 function App() {
-  const [selectedPI, setSelectedPi] = useState();//"http://192.168.0.14:4321")
+  const [selectedPI, setSelectedPi] = useState<URL| null>();//"http://192.168.0.14:4321")
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -20,7 +20,7 @@ function App() {
       <DiscoveryWrapper>
         {(urls: URL[])=>
         { 
-          return  selectedPI ? <DevicePage ip={(selectedPI as unknown as string)} /> : <Dashboards urls={urls}/>
+          return  selectedPI ? <DevicePage ip={(selectedPI as unknown as string)} goBack={() => setSelectedPi(null)} /> : <DashboardPage urls={urls} setSelectedPi={setSelectedPi}/>
         
         }
         }
