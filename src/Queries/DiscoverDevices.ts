@@ -7,17 +7,10 @@ export const  discovery_devices = (): Promise<String[] |void> => {
     // console.log("discovering")
     // arp.get((table)=>console.log(JSON.stringify(table)))
 
-    // let range = getIPRange('192.168.0.0/24')
-    // let ar= range.map(discovery_request);
-    // let result: String[] =  
-    //TODO figure out to to ping all network devices/ might have to do it not with react query
-    // return Promise.all<String>(ar)
-        // .then((strArray) => {console.log("here");console.log(strArray); return strArray})
-        // .then(strArray => strArray.filter(s => s !== ""))
-        // .then((strArray) => {console.log(strArray); return strArray})
-        // .catch((e)=> {})
+    let range = getIPRange('192.168.0.0/24')
+    let ar= range.map(discovery_request);
 
-    return Promise.resolve(["192.168.0.14", "192.168.0.131", "192.168.0.133"])//find('192.168.0.0/24')   
+    return Promise.all(ar);
 }
 
 const discovery_request =(ip: string):Promise<String> =>  {

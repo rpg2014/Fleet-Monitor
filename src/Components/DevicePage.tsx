@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { useQueries, UseQueryResult } from 'react-query';
 import { fetchUptime, fetchHostname, fetchCpuTemp, fiveSecUpdateOptions, fetchLoadAverage, fetchCpuAverage, oneSecondUpdateOptions, fetchNetworks, fetchNetStats } from '../Queries/FetchSystemStats';
-import { getLoadString } from './Dashboards';
 import prettyBytes from 'pretty-bytes'
-import { Alert } from 'react-bootstrap';
+import { Alert, Button, Spinner } from 'react-bootstrap';
+import { getLoadString } from './Flashcard';
+import { Graphs } from './Graphs';
+import Networks from './Networks';
 
 
 interface IDevicePageProps {
     ip: string;
+    goBack: () => void;
   }
-type NetworkResult = {
+export type NetworkResult = {
     networks: NetworkDetails[],
 }
 
@@ -20,16 +23,17 @@ type NetworkResult = {
 //     V4(Ipv4Addr),
 //     V6(Ipv6Addr),
 // }
-type  NetworkAddrsDetails={
-    addr: any,
+export type  NetworkAddrsDetails={
+    addr: Record<string, string>,
 }
 
-type  NetworkDetails = {
+export type  NetworkDetails = {
     name: string,
     addrs: NetworkAddrsDetails[],
 }
 
 interface NetworkStats {
+    network_name: string,
      rx_bytes: number,
      tx_bytes: number,
      rx_packets: number,
@@ -66,9 +70,12 @@ interface NetworkStatsResults {
     //TODO, need to decide on layout below.  Do i want cards? or like tabs?  I think tabs would be smaller. i should prob work on the graph for now.
     return (
       <div className="container-fluid text-white m-0 p-0 h-100  ">
-        <h1 className=' text-center'>Hostname: {host.data}</h1>
+          <div className='row justify'>
+            <h1 className=' col-10 text-center'>Hostname: {host.data}</h1>
+            <Button size='sm' variant='outline-secondary'className='col-1' onClick={()=> props.goBack()}>Go Back</Button>
+        </div>
         <div className=' container-fluid d-flex flex-column flex-wrap justify-content-around text-left align-items-center '>
-            <CpuGraph />
+            <Graphs device={props.ip} />
             <div className=' container col bg-secondary rounded  align-items-left '>
                 <div className='row  justify-content-start'>
                 <p className=' col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
@@ -81,7 +88,7 @@ interface NetworkStatsResults {
                     return (
                         eth0?
                 <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
-                    eth0: <span>{`tx ${prettyBytes(eth0.tx_bytes)} / rx ${prettyBytes(eth0.rx_bytes)}`}</span>
+                    {JSON.stringify(eth0.network_name)}: <span>{`tx ${prettyBytes(eth0.tx_bytes)} / rx ${prettyBytes(eth0.rx_bytes)}`}</span>
                 </p> : null
                     )
                 })
@@ -89,9 +96,7 @@ interface NetworkStatsResults {
                 }
                 </div>   
                 <div>
-                    <p>
-                        Networks: {JSON.stringify(networksQ.data)}
-                    </p>
+                    <Networks networkData={networksQ.data as NetworkResult}/>
                 </div>
             </div>
         </div>
@@ -100,8 +105,5 @@ interface NetworkStatsResults {
     )
   }
 
-const CpuGraph = () => {
-    return <div className=' align-self-stretch m-4 p-3 shadow rounded bg-secondary justify-content-center align-items-center lead'>
-        Graph
-    </div>
-}
+
+  

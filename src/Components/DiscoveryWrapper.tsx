@@ -12,9 +12,19 @@ interface IDiscoveryWrapper {
 
 export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
     // this is for the discovery queryies
-//     const query = useQuery<String[] | void>('discover', discovery_devices, discoverDevicesOptions)
+    // const discoveryQuery = useQueries<String[] | void>('discover', discovery_devices, discoverDevicesOptions)
+    // const scanForDevices = () => {
+    //     discoveryQuery.refetch();
+    // }
+    
     
     const [urls, setUrls] = useState<URL[] | null>(null)
+
+    // React.useEffect(()=> {
+    //     if(discoveryQuery.data && !discoveryQuery.isPreviousData) {
+    //         setUrls()
+    //     }
+    // }, [discoveryQuery.data])
     React.useEffect(() => {
         if(storageAvailable('localStorage')) {
             let urlJSON = localStorage.getItem("saved_devices");
@@ -26,24 +36,6 @@ export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
             }
         }
     },[])
-
-    
-
-//     React.useEffect(()=> {
-//         if(query.data) {
-//             console.log(query.data)
-            
-//             let urls = (query.data as unknown as string[]).map(ip => new URL("http://" +ip +":4321"))
-//             setUrls(urls)
-//         }
-//     },[query.data])
-    
-//   if(query.isLoading) {
-//     return(
-//         <ProgressBar animated now={100} label="Discovering devices" />
-//     )
-//   }
-//   else {
     
     const [setUpPageToggle, setSetUpPageToggle] = useState<boolean>(false);
     const saveState = () => {
@@ -70,13 +62,13 @@ export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
         return(<div className='container'>
             <h1 className='text-center text-white py-5'>Devices</h1>
             {urls.map((url) => {
-                
                 return(<IPInput key={url.toString()} deleteURL={deleteURL} addURL={addUrl} url={url} />)
-                
             })}
-            <hr className='bg-secondary w-75 rounded' ></hr >
+            <hr className='bg-secondary w-75 rounded' ></hr>
             <IPInput  key="newURL" addURL={addUrl} deleteURL={deleteURL} ></IPInput>
+            {/* {discoveryQuery.isLoading && <ProgressBar now={100} animated />} */}
             <div className=' row pt-5 flex justify-content-center'>
+                {/* <Button variant='outline-info' onClick={()=> scanForDevices()} className='mx-auto align-self-center' size='lg'> Scan for Devices</Button> */}
             <Button variant='outline-success' onClick={() => setSetUpPageToggle(!setUpPageToggle)} className='mx-auto align-self-center' size='lg'  >Done</Button>
             </div>
         </div>
