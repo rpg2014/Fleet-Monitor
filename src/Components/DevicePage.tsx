@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { useQueries, UseQueryResult } from 'react-query';
 import { fetchUptime, fetchHostname, fetchCpuTemp, fiveSecUpdateOptions, fetchLoadAverage, fetchCpuAverage, oneSecondUpdateOptions, fetchNetworks, fetchNetStats } from '../Queries/FetchSystemStats';
 import prettyBytes from 'pretty-bytes'
-import { Alert, Button } from 'react-bootstrap';
+import { Alert, Button, Spinner } from 'react-bootstrap';
 import { getLoadString } from './Flashcard';
 import { Graphs } from './Graphs';
+import Networks from './Networks';
 
 
 interface IDevicePageProps {
     ip: string;
     goBack: () => void;
   }
-type NetworkResult = {
+export type NetworkResult = {
     networks: NetworkDetails[],
 }
 
@@ -22,11 +23,11 @@ type NetworkResult = {
 //     V4(Ipv4Addr),
 //     V6(Ipv6Addr),
 // }
-type  NetworkAddrsDetails={
-    addr: any,
+export type  NetworkAddrsDetails={
+    addr: Record<string, string>,
 }
 
-type  NetworkDetails = {
+export type  NetworkDetails = {
     name: string,
     addrs: NetworkAddrsDetails[],
 }
@@ -87,7 +88,7 @@ interface NetworkStatsResults {
                     return (
                         eth0?
                 <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
-                    {eth0.network_name}: <span>{`tx ${prettyBytes(eth0.tx_bytes)} / rx ${prettyBytes(eth0.rx_bytes)}`}</span>
+                    {JSON.stringify(eth0.network_name)}: <span>{`tx ${prettyBytes(eth0.tx_bytes)} / rx ${prettyBytes(eth0.rx_bytes)}`}</span>
                 </p> : null
                     )
                 })
@@ -95,9 +96,7 @@ interface NetworkStatsResults {
                 }
                 </div>   
                 <div>
-                    <p>
-                        Networks: {JSON.stringify(networksQ.data)}
-                    </p>
+                    <Networks networkData={networksQ.data as NetworkResult}/>
                 </div>
             </div>
         </div>
@@ -105,3 +104,6 @@ interface NetworkStatsResults {
       </div>
     )
   }
+
+
+  
