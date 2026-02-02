@@ -2,9 +2,9 @@ import { url } from 'inspector';
 import React, { useState } from 'react';
 import { Button, Dropdown, DropdownButton, FormControl, InputGroup, ProgressBar, Spinner } from 'react-bootstrap';
 import { useQuery } from 'react-query';
-import { discoverDevicesOptions, discovery_devices } from '../Queries/DiscoverDevices';
-import { fetchHostname } from '../Queries/FetchSystemStats';
-import { IPInput } from './IPInput';
+import { discoverDevicesOptions, discovery_devices } from '../Queries/DiscoverDevices.ts';
+import { fetchHostname } from '../Queries/FetchSystemStats.ts';
+import { IPInput } from './IPInput.tsx';
 
 interface IDiscoveryWrapper {
     children: any;

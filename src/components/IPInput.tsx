@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Alert, Badge, Button, Dropdown, DropdownButton, Form, FormControl, InputGroup, ProgressBar, Spinner } from 'react-bootstrap';
 import { useQuery } from 'react-query';
-import { fetchHostname } from '../Queries/FetchSystemStats';
-import { BiError } from 'react-icons/bi';
+import { fetchHostname } from '../Queries/FetchSystemStats.ts';
+
 
 
 interface IIPInputProps {
@@ -115,8 +115,8 @@ const InfoPanel = ({url}:{url?: URL})=> {
 
     if(query.isError) {
         return (
-            <>
-            {`${url.protocol}//${url.hostname}`} <Badge className='align-items-center' pill variant='danger'><BiError className='align-items-center'/>Failed to connect to device</Badge>
+            <>                                                                      
+            {`${url.protocol}//${url.hostname}`} <Badge className='align-items-center' pill variant='danger'><div data-id={/*Used to be BiError icon*/``} className='align-items-center'/>Failed to connect to device</Badge>
             </>
         )
     }

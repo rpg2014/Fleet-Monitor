@@ -1,5 +1,5 @@
 import { Spinner, Alert } from "react-bootstrap"
-import { NetworkResult, NetworkDetails, NetworkAddrsDetails } from "./DevicePage"
+import { NetworkResult, NetworkDetails, NetworkAddrsDetails } from "./DevicePage.tsx"
 import './Networks.scss'
 
 export default ({networkData}: {networkData: NetworkResult}) => {

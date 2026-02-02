@@ -3,17 +3,18 @@ import { UseQueryOptions } from 'react-query'
 import { getIPRange } from 'get-ip-range';
 // import arp from 'arptable-js'
 
-export const  discovery_devices = (): Promise<String[] |void> => {
+export const  discovery_devices = (): Promise<string[] |void> => {
     // console.log("discovering")
     // arp.get((table)=>console.log(JSON.stringify(table)))
 
-    let range = getIPRange('192.168.0.0/24')
-    let ar= range.map(discovery_request);
+    // let range = getIPRange('192.168.0.0/24')
+    // let ar= range.map(discovery_request);
 
-    return Promise.all(ar);
+    // return Promise.all(ar);
+    return new Promise(() => ["192.168.0.14"])
 }
 
-const discovery_request =(ip: string):Promise<String> =>  {
+const discovery_request =(ip: string):Promise<string> =>  {
     return fetch("http://"+ip+":4321/system/hostname",{}).then(response => response.json())
 }
 
