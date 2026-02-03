@@ -49,7 +49,7 @@ export const IPInput = (props: IIPInputProps) => {
                 <>
                     <FormControl readOnly value={`${url.protocol}//${url.hostname}`}/> 
                      <DropdownButton
-                        as={InputGroup.Append} variant="outline-light  " title="Edit" id="input-group-dropdown-2">
+                        variant="outline-light  " title="Edit" id="input-group-dropdown-2">
                         {/* <Dropdown.Item onClick={(e)=> console.log)}>Edit</Dropdown.Item> */}
                         <Dropdown.Item className=' ' onClick={()=> props.deleteURL(url)}><span
                                 className='rounded  text-danger'>Delete</span></Dropdown.Item>
@@ -65,15 +65,12 @@ export const IPInput = (props: IIPInputProps) => {
 
 
 
-                    <InputGroup.Append>
-                        <Button variant={isValid?"outline-success":"outline-danger"} onClick={(e)=>
-                            handleSubmit(newURL)}>Save</Button>
-
-                    </InputGroup.Append>
+                    <Button variant={isValid?"outline-success":"outline-danger"} onClick={(e)=>
+                        handleSubmit(newURL)}>Save</Button>
                 </>
                 }
                 {!isValid ?
-                <Badge variant='danger'>
+                <Badge bg='danger'>
                     <div className='small text-break'> Please enter a valid url. Currently only local devices are
                         supported (eg. "http://192.168.0.xxx"). Don't include a port number. </div>
                 </Badge> :
@@ -108,7 +105,7 @@ const InfoPanel = ({url}:{url?: URL})=> {
     if(query.isLoading) {
         return (
             <>
-              {`${url.protocol}//${url.hostname}`} <Badge className='' pill variant="warning">Attempting to connect <Spinner size='sm' animation='border'/></Badge>
+              {`${url.protocol}//${url.hostname}`} <Badge className='' pill bg="warning">Attempting to connect <Spinner size='sm' animation='border'/></Badge>
             </>
         )
     }
@@ -116,7 +113,7 @@ const InfoPanel = ({url}:{url?: URL})=> {
     if(query.isError) {
         return (
             <>                                                                      
-            {`${url.protocol}//${url.hostname}`} <Badge className='align-items-center' pill variant='danger'><div data-id={/*Used to be BiError icon*/``} className='align-items-center'/>Failed to connect to device</Badge>
+            {`${url.protocol}//${url.hostname}`} <Badge className='align-items-center' pill bg='danger'><div data-id={/*Used to be BiError icon*/``} className='align-items-center'/>Failed to connect to device</Badge>
             </>
         )
     }
@@ -124,7 +121,7 @@ const InfoPanel = ({url}:{url?: URL})=> {
     <>
         <div className='row justify-content-center'>{query.data}
             <div className='mx-3'>
-                <Badge className='' pill variant="success">Connected</Badge>
+                <Badge pill bg="success">Connected</Badge>
             </div>
         </div> 
     </>

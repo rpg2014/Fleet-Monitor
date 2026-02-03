@@ -1,30 +1,15 @@
-import { url } from 'inspector';
 import React, { useState } from 'react';
-import { Button, Dropdown, DropdownButton, FormControl, InputGroup, ProgressBar, Spinner } from 'react-bootstrap';
-import { useQuery } from 'react-query';
-import { discoverDevicesOptions, discovery_devices } from '../Queries/DiscoverDevices.ts';
-import { fetchHostname } from '../Queries/FetchSystemStats.ts';
+import { Button, Spinner } from 'react-bootstrap';
 import { IPInput } from './IPInput.tsx';
 
 interface IDiscoveryWrapper {
-    children: any;
+    children: (urls: URL[]) => React.ReactNode;
 }
 
 export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
-    // this is for the discovery queryies
-    // const discoveryQuery = useQueries<String[] | void>('discover', discovery_devices, discoverDevicesOptions)
-    // const scanForDevices = () => {
-    //     discoveryQuery.refetch();
-    // }
-    
-    
     const [urls, setUrls] = useState<URL[] | null>(null)
+    const [setUpPageToggle, setSetUpPageToggle] = useState<boolean>(false);
 
-    // React.useEffect(()=> {
-    //     if(discoveryQuery.data && !discoveryQuery.isPreviousData) {
-    //         setUrls()
-    //     }
-    // }, [discoveryQuery.data])
     React.useEffect(() => {
         if(storageAvailable('localStorage')) {
             let urlJSON = localStorage.getItem("saved_devices");
@@ -37,92 +22,72 @@ export const DiscoveryWrapper = (props: IDiscoveryWrapper) => {
         }
     },[])
     
-    const [setUpPageToggle, setSetUpPageToggle] = useState<boolean>(false);
     const saveState = () => {
-        localStorage.setItem('saved_devices', JSON.stringify(urls))
+        if (urls) {
+            localStorage.setItem('saved_devices', JSON.stringify(urls.map(url => url.toString())))
+        }
     }
+    
     React.useEffect(() => {
         saveState();
     },[urls])
 
-
     if(!urls) {
-        return (
-            <Spinner animation='border' variant='light' />
-        )
+        return <Spinner animation='border' variant='light' />
     }
     
     const addUrl = (url: URL) => {
         setUrls(urls.concat([url]));
     }
+    
     const deleteURL = (urlToDelete: URL) => {
         setUrls(urls.filter(url => url.toString() !== urlToDelete.toString()));
     }
+    
     if(setUpPageToggle){
-        return(<div className='container'>
-            <h1 className='text-center text-white py-5'>Devices</h1>
-            {urls.map((url) => {
-                return(<IPInput key={url.toString()} deleteURL={deleteURL} addURL={addUrl} url={url} />)
-            })}
-            <hr className='bg-secondary w-75 rounded' ></hr>
-            <IPInput  key="newURL" addURL={addUrl} deleteURL={deleteURL} ></IPInput>
-            {/* {discoveryQuery.isLoading && <ProgressBar now={100} animated />} */}
-            <div className=' row pt-5 flex justify-content-center'>
-                {/* <Button variant='outline-info' onClick={()=> scanForDevices()} className='mx-auto align-self-center' size='lg'> Scan for Devices</Button> */}
-            <Button variant='outline-success' onClick={() => setSetUpPageToggle(!setUpPageToggle)} className='mx-auto align-self-center' size='lg'  >Done</Button>
+        return(
+            <div className='container'>
+                <h1 className='text-center text-white py-5'>Devices</h1>
+                {urls.map((url) => (
+                    <IPInput key={url.toString()} deleteURL={deleteURL} addURL={addUrl} url={url} />
+                ))}
+                <hr className='bg-secondary w-75 rounded' />
+                <IPInput key="newURL" addURL={addUrl} deleteURL={deleteURL} />
+                <div className='row pt-5 flex justify-content-center'>
+                    <Button 
+                        variant='outline-success' 
+                        onClick={() => setSetUpPageToggle(false)} 
+                        className='mx-auto align-self-center' 
+                        size='lg'
+                    >
+                        Done
+                    </Button>
+                </div>
             </div>
-        </div>
         )
     }
     
-      return (
-          <div className='w-100 container col'>
-          {/* <DiscoveryDebug/>   */}
-          <div className='row justify-content-end'>
-          <Button size='sm' variant='light'className=' col-md-1 p-2 text-center align-self-end  mx-5 mb-3 mt-5'   onClick={()=> setSetUpPageToggle(!setUpPageToggle)}><strong>Edit Devices</strong></Button>
-          </div>
-          {props.children(urls)}
-          </div>
-      )
-//   }
-}
-
-
-
-const DiscoveryDebug = () => {
-    const query = useQuery('discover', discovery_devices, {
-        ...discoverDevicesOptions,
-        refetchOnMount: false,
-    });
-    const [showDebug, setShowDebug] = useState(false)
-    if(showDebug){
     return (
-        <p className='w-100  text-white border border-info m-0 rounded-bottom fixed-top'style={{textAlign: 'center'}}> 
-            Status: {query.status}, Data: {JSON.stringify(query.data)} 
-            <Button  variant='outline-secondary' size='sm' onClick={()=> setShowDebug(!showDebug)}>
-                Click to hide
-            </Button> 
-        </p>
-    )
-    }
-    else {
-        return (
-            <div className='h-auto float-right'>
-            <Button variant='outline-secondary' className='fixed-top' onClick={()=> setShowDebug(!showDebug)}>
-                Show Debug
-            </Button>
+        <div className='w-100 container col'>
+            <div className='row justify-content-end'>
+                <Button 
+                    size='sm' 
+                    variant='light'
+                    className='col-md-1 p-2 text-center align-self-end mx-5 mb-3 mt-5'   
+                    onClick={() => setSetUpPageToggle(true)}
+                >
+                    <strong>Edit Devices</strong>
+                </Button>
             </div>
-        )
-    }
+            {props.children(urls)}
+        </div>
+    )
 }
 
-
-
-function storageAvailable(type: any) {
-    var storage;
+function storageAvailable(type: string): boolean {
     try {
-        storage = window[type] as unknown as Storage;
-        var x = '__storage_test__';
+        const storage = window[type as keyof Window] as Storage;
+        const x = '__storage_test__';
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;

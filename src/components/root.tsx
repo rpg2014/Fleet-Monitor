@@ -4,24 +4,29 @@ import { DiscoveryWrapper } from "./DiscoveryWrapper.tsx"
 import { useState } from "react"
 import { DashboardPage } from "./Dashboards.tsx"
 import { DevicePage } from "./DevicePage.tsx"
-
+import { ErrorBoundary } from "./ErrorBoundary.tsx"
 
 const queryClient = new QueryClient()
 
-
 export const Index = () => {
-    const [selectedPI, setSelectedPi] = useState<URL| null>();//"http://192.168.0.14:4321")
+    const [selectedPI, setSelectedPi] = useState<URL | null>(null);
+    
     return(
-        <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <DiscoveryWrapper>
-        {(urls: URL[])=>
-        { 
-          return  selectedPI ? <DevicePage ip={(selectedPI as unknown as string)} goBack={() => setSelectedPi(null)} /> : <DashboardPage urls={urls} setSelectedPi={setSelectedPi}/>
-        
-        }
-        }
-      </DiscoveryWrapper>
-    </QueryClientProvider>
+        <ErrorBoundary>
+            <QueryClientProvider client={queryClient}>
+                <ReactQueryDevtools initialIsOpen={false} />
+                <DiscoveryWrapper>
+                    {(urls: URL[]) => 
+                        selectedPI ? 
+                            <ErrorBoundary>
+                                <DevicePage ip={selectedPI} goBack={() => setSelectedPi(null)} />
+                            </ErrorBoundary> : 
+                            <ErrorBoundary>
+                                <DashboardPage urls={urls} setSelectedPi={setSelectedPi}/>
+                            </ErrorBoundary>
+                    }
+                </DiscoveryWrapper>
+            </QueryClientProvider>
+        </ErrorBoundary>
     )
 }

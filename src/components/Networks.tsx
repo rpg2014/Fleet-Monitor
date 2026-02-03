@@ -1,6 +1,5 @@
 import { Spinner, Alert } from "react-bootstrap"
 import { NetworkResult, NetworkDetails, NetworkAddrsDetails } from "./DevicePage.tsx"
-import './Networks.scss'
 
 export default ({networkData}: {networkData: NetworkResult}) => {
     if (!networkData) {
@@ -17,7 +16,7 @@ export default ({networkData}: {networkData: NetworkResult}) => {
             </p>
             {/* <div className='networks-list-container'> */}
             <div className='card-deck'>
-                {networkData ? networkData.networks.map((network: NetworkDetails) => <NetworkCard network={network} />) : <Spinner animation='border' />}
+                {networkData ? networkData.networks.map((network: NetworkDetails) => <NetworkCard key={network.name} network={network} />) : <Spinner animation='border' />}
             </div>
         </>
     )

@@ -9,7 +9,7 @@ import Networks from './Networks';
 
 
 interface IDevicePageProps {
-    ip: string;
+    ip: URL;
     goBack: () => void;
   }
 export type NetworkResult = {
@@ -77,17 +77,17 @@ interface NetworkStatsResults {
         <div className=' container-fluid d-flex flex-column flex-wrap justify-content-around text-left align-items-center '>
             <Graphs device={props.ip} />
             <div className=' container col bg-secondary rounded  align-items-left '>
-                <div className='row  justify-content-start'>
-                <p className=' col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
+                <div className='row  justify-content-start w-auto'>
+                <p className=' col-xsm m-2 font-weight-light text-light bg-dark rounded p-2 w-auto'>
                     Uptime: <span>{uptime.data}</span>
                 </p>
-                <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
+                <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2  w-auto'>
                     Load: <span>{getLoadString(load.data)}</span>
                 </p> 
                 {list?.map((eth0)=> {
                     return (
                         eth0?
-                <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2'>
+                <p className='col-xsm m-2 font-weight-light text-light bg-dark rounded p-2  w-auto'>
                     {JSON.stringify(eth0.network_name)}: <span>{`tx ${prettyBytes(eth0.tx_bytes)} / rx ${prettyBytes(eth0.rx_bytes)}`}</span>
                 </p> : null
                     )

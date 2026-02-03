@@ -28,3 +28,7 @@ Build production assets:
 ```
 $ deno task build
 ```
+then run `pushToPi.sh`or just rsync to Pi host
+```
+$ rsync -avz --delete ./dist/ pi@192.168.0.213:/var/www/fleet.parkergiven.com/
+```

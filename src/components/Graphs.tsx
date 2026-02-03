@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
-import {ResponsiveLine} from '@nivo/line'
-import { useQuery } from 'react-query';
-import { fetchCpuAverage, oneSecondUpdateOptions } from '../Queries/FetchSystemStats.ts';
-import loadable from '@loadable/component';
-
-import './Graphs.css'
-import { Spinner } from 'react-bootstrap';
 import { Graph } from './Graph.tsx';
-import Networks from './Networks.tsx';
+
 interface IGraphsProps {
     device: string
 }

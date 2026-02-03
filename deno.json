@@ -1,11 +1,13 @@
 {
   "tasks": {
-    "dev": "deno run -A --node-modules-dir npm:vite",
+    "dev": "deno run -A --node-modules-dir npm:vite --host",
     "build": "deno run -A --node-modules-dir npm:vite build",
-    "preview": "deno run -A --node-modules-dir npm:vite preview",
+    "preview": "deno run -A --node-modules-dir npm:vite preview --host",
     "serve": "deno run --allow-net --allow-read jsr:@std/http@1/file-server dist/",
     "start": "deno run -A --node-modules-dir npm:vite",
-    "test": "echo \"No test specified\" && exit 0"
+    "test": "echo \"No test specified\" && exit 0",
+    "clean": "rm -rf dist node_modules .vite",
+    "dev:open": "deno run -A --node-modules-dir npm:vite --host --open"
   },
   "compilerOptions": {
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -14,7 +16,7 @@
     "jsxImportSourceTypes": "@types/react"
   },
   "imports": {
-    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.0",
+    "@deno/vite-plugin": "npm:@deno/vite-plugin@^1.0.6",
     "@loadable/component": "npm:@loadable/component@^5.15.0",
     "@nivo/core": "npm:@nivo/core@^0.87.0",
     "@nivo/line": "npm:@nivo/line@^0.87.0",

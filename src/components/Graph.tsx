@@ -3,7 +3,6 @@ import React, { useEffect } from "react"
 import { useState } from "react"
 import { useQueries, useQuery } from "react-query"
 import { fetchCpuAverage, fetchCpuTemp, oneSecondUpdateOptions } from "../Queries/FetchSystemStats"
-import './Graphs.css'
 
 
 type GraphDataList = Array<{
