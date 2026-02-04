@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Button } from 'react-bootstrap';
+import { Button, Card, CardContent } from './ui';
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -26,19 +26,26 @@ export class ErrorBoundary extends React.Component<
     override render() {
         if (this.state.hasError) {
             return (
-                <div className="container mt-5">
-                    <Alert variant="danger">
-                        <Alert.Heading>Something went wrong</Alert.Heading>
-                        <p>An error occurred while rendering this component.</p>
-                        <pre>{this.state.error?.message}</pre>
-                        <hr />
-                        <Button 
-                            variant="outline-danger" 
-                            onClick={() => this.setState({ hasError: false })}
-                        >
-                            Try again
-                        </Button>
-                    </Alert>
+                <div className="container mx-auto px-4 py-8">
+                    <Card className="max-w-2xl mx-auto">
+                        <CardContent>
+                            <div className="text-center space-y-4">
+                                <h2 className="text-xl font-semibold text-red-400">Something went wrong</h2>
+                                <p className="text-gray-300">An error occurred while rendering this component.</p>
+                                {this.state.error && (
+                                    <pre className="bg-gray-900 p-4 rounded text-sm text-red-300 overflow-auto">
+                                        {this.state.error.message}
+                                    </pre>
+                                )}
+                                <Button 
+                                    variant="outline" 
+                                    onClick={() => this.setState({ hasError: false })}
+                                >
+                                    Try again
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </div>
             );
         }

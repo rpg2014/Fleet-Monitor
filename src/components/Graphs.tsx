@@ -1,40 +1,57 @@
-import React, { useState } from 'react';
-import { Graph } from './Graph.tsx';
+import { useState } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, Button } from './ui';
+import { Graph } from './Graph';
 
-interface IGraphsProps {
-    device: string
+interface GraphsProps {
+  device: URL;
 }
 
-const GraphList =  ['cpu_temp', 'cpu_average'/*, 'net_stats'*/];
+const GraphList = ['cpu_temp', 'cpu_average'];
 
-export const Graphs = (props: IGraphsProps) => {
-    const [selectedGraph, setSelectedGraph] = useState('cpu_average');
-    return (
-        <div className='shadow text-center text-white  container rounded border-danger bg-dark m-3 w-100'>
-            <h1 className='pt-3 pb-1'>Graphs</h1>
-            <hr className='bg-secondary w-75'/>
-            <div className='row  graph-wrapper' >
-                <GraphFilter selectedGraph={selectedGraph} setSelectedGraph={(selectedGraph: string) => setSelectedGraph(selectedGraph)} />
-                <Graph url={props.device} selectedGraph={selectedGraph} />
-            </div>
+export function Graphs({ device }: GraphsProps) {
+  const [selectedGraph, setSelectedGraph] = useState('cpu_average');
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Performance Graphs</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          <GraphFilter 
+            selectedGraph={selectedGraph} 
+            setSelectedGraph={setSelectedGraph} 
+          />
+          <div className="min-h-[400px]">
+            <Graph url={device.toString()} selectedGraph={selectedGraph} />
+          </div>
         </div>
-    )
+      </CardContent>
+    </Card>
+  );
 }
 
-export const GraphFilter = (props: {selectedGraph: string, setSelectedGraph: (selectedGraph: string)=> void}) => {
-    
-    
-    return <ul className='graph-filter list-group list-group-flush  text-dark w-10'>
-        {GraphList.map((name) => {
-            return (<li className={`list-group-item  bg-secondary rounded graph-list-item p-1 m-2${props.selectedGraph === name ? ' bg-info': ''}`} key={name} onClick={()=> props.setSelectedGraph(name)}>{name}</li>)
-        })}
-    </ul>
+interface GraphFilterProps {
+  selectedGraph: string;
+  setSelectedGraph: (graph: string) => void;
 }
 
-
-// const LoadableGraph = loadable(() => import("./Graph"), {
-//     fallback: <Spinner animation='border'/>
-//   });
+function GraphFilter({ selectedGraph, setSelectedGraph }: GraphFilterProps) {
+  return (
+    <div className="flex gap-2 flex-wrap">
+      {GraphList.map((name) => (
+        <Button
+          key={name}
+          variant={selectedGraph === name ? 'primary' : 'outline'}
+          size="sm"
+          onClick={() => setSelectedGraph(name)}
+        >
+          {name.replace('_', ' ').toUpperCase()}
+        </Button>
+      ))}
+    </div>
+  );
+}
 
 
 

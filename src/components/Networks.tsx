@@ -1,39 +1,63 @@
-import { Spinner, Alert } from "react-bootstrap"
-import { NetworkResult, NetworkDetails, NetworkAddrsDetails } from "./DevicePage.tsx"
+import { Card, CardHeader, CardTitle, CardContent, LoadingSpinner } from './ui';
+import type { NetworkResult, NetworkDetails, NetworkAddress } from '../types/api';
 
-export default ({networkData}: {networkData: NetworkResult}) => {
-    if (!networkData) {
-        return <Spinner animation='border'/>
-    }
-    
-    if (!networkData.networks) {
-        return <Alert variant='danger'>No networks found</Alert>
-    }
+interface NetworksProps {
+  networkData?: NetworkResult;
+}
+
+export function Networks({ networkData }: NetworksProps) {
+  if (!networkData) {
+    return <LoadingSpinner message="Loading networks..." />;
+  }
+  
+  if (!networkData.networks) {
     return (
-        <>
-            <p className='h2 text-dark text-center'>
-                Networks
-            </p>
-            {/* <div className='networks-list-container'> */}
-            <div className='card-deck'>
-                {networkData ? networkData.networks.map((network: NetworkDetails) => <NetworkCard key={network.name} network={network} />) : <Spinner animation='border' />}
-            </div>
-        </>
-    )
+      <Card>
+        <CardContent>
+          <p className="text-red-400">No networks found</p>
+        </CardContent>
+      </Card>
+    );
   }
 
-export const NetworkCard = ({network}: {network: NetworkDetails}) => {
-    return (
-        <div className='network-container  bg-dark text-light m-2'>
-            <div className='network-name card-header p-2'>
-                <div className='card-title'>{network.name}</div>
+  return (
+    <div className="space-y-4">
+      <h2 className="text-xl font-semibold text-white text-center mb-6">
+        Network Interfaces
+      </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {networkData.networks.map((network: NetworkDetails) => (
+          <NetworkCard key={network.name} network={network} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+interface NetworkCardProps {
+  network: NetworkDetails;
+}
+
+function NetworkCard({ network }: NetworkCardProps) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{network.name}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {network.addrs.map((addressDetails: NetworkAddress, index) => (
+            <div key={index} className="text-sm">
+              {Object.entries(addressDetails.addr).map(([key, value]) => (
+                <div key={key} className="flex justify-between">
+                  <span className="text-gray-400">IP{key}:</span>
+                  <span className="text-gray-300 font-mono">{value}</span>
+                </div>
+              ))}
             </div>
-            <div className='network-addrs card-body'>
-                {network.addrs.map((addressDetails: NetworkAddrsDetails, index) => 
-                <div className="address-details" key={index}>
-                    {`IP${Object.keys(addressDetails.addr)[0]}:  ${Object.values(addressDetails.addr)[0]}`}
-                </div>)}
-            </div>
+          ))}
         </div>
-    )
-  }
+      </CardContent>
+    </Card>
+  );
+}

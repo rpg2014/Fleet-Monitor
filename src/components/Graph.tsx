@@ -1,8 +1,7 @@
 import { ResponsiveLine } from "@nivo/line"
 import React, { useEffect } from "react"
 import { useState } from "react"
-import { useQueries, useQuery } from "react-query"
-import { fetchCpuAverage, fetchCpuTemp, oneSecondUpdateOptions } from "../Queries/FetchSystemStats"
+import { useQuery } from "@tanstack/react-query"
 
 
 type GraphDataList = Array<{
@@ -23,9 +22,16 @@ interface CPUAverageResponse {
         idle: number
 }
 
+const fetchJson = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+  return response.json();
+};
+
 const stringToGraphYAxisMap: Record<string, (s: any)=> number> = {
     "cpu_average": (data: CPUAverageResponse) =>   {
-        // console.log(`data.idle: ${data.idle}`)
         return 100-(data.idle*100)
     },
     'cpu_temp': (data: number) => data
@@ -40,33 +46,22 @@ export const Graph = (props: {url: string, selectedGraph: string}) => {
     let graphType 
     switch (props.selectedGraph) {
         case "cpu_average":
-            graphType = async (queryKey: any) => {
-                let data = await fetchCpuAverage(queryKey);
-                return data
-                // the below breaks b/c of the return datatype is differnt than what the below code expects
-                // it hits the func below twice.  But we'll use the below approach when combining the data
-                // return stringToGraphYAxisMap['cpu_average'](data);
-            };;
+            graphType = () => fetchJson(`${props.url}system/cpu_average`);
             break;
         case "cpu_temp": 
-            graphType = async (queryKey: any) => {
-                let data = await fetchCpuTemp(queryKey);
-                return stringToGraphYAxisMap['cpu_temp'](data);
-            };
+            graphType = () => fetchJson(`${props.url}system/cpu_temp`);
             break;
         default :
-            graphType=fetchCpuAverage;
+            graphType = () => fetchJson(`${props.url}system/cpu_average`);
             break;
-    
     }
 
-    // const queries = useQueries({
-    //     queries: [
-    //         {queryKey: [props.selectedGraph, props], queryFn: }
-    //     ]
-    // })
-
-    const query = useQuery<CPUAverageResponse | number>([props.selectedGraph,props], graphType, oneSecondUpdateOptions)
+    const query = useQuery<CPUAverageResponse | number>({
+        queryKey: [props.selectedGraph, props.url],
+        queryFn: graphType,
+        refetchInterval: 1000,
+        retry: 2,
+    })
     
     useEffect(() => {
         console.log("changed graph type")
@@ -75,9 +70,8 @@ export const Graph = (props: {url: string, selectedGraph: string}) => {
         setlistOfPoints([])
     },[props.selectedGraph])
     React.useEffect(()=> {
-        if( query.data && !query.isPreviousData){
+        if( query.data && !query.isFetching){
             setNumUnitOfTime(NumUnitOfTime+1); 
-            // console.log(stringToGraphYAxisMap[props.selectedGraph](query.data))
             //@ts-ignore
             setlistOfPoints(listOfPoints.concat([{x: NumUnitOfTime, y: stringToGraphYAxisMap[props.selectedGraph](query.data)}]))
             
